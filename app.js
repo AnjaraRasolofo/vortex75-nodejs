@@ -1,4 +1,7 @@
+const fs = require('fs');
 const express = require('express');
+const http = require('http');
+const { Server } = require('socket.io'); 
 const multer = require('multer');
 const session = require('express-session');
 const Message = require('./models/Message');
@@ -11,12 +14,13 @@ const flash = require('connect-flash');
 
 const authRoutes = require('./routes/auth.routes');
 
-const http = require('http');
-const { Server } = require('socket.io'); 
-
 const app = express();
+
 const server = http.createServer(app);
-const io = new Server(server); 
+
+const io = new Server(server, {
+  cors: { origin: '*' }
+}); 
 
 app.use(express.static('public')); 
 
@@ -73,6 +77,7 @@ app.get('/admin/', (req, res) => {
 });
 
 io.on('connection', (socket) => {
+    console.log('Client connecté');
     socket.on('send_message', async (data) => {
         let { userId, content, receiverId } = data;
 
@@ -98,4 +103,7 @@ io.on('connection', (socket) => {
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => console.log(`Serveur démarré sur le port ${PORT}`));
+/*server.listen(443, () => {
+  console.log('Serveur sécurisé démarré sur 443');
+});*/
 module.exports = app;

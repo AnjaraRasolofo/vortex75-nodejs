@@ -174,27 +174,27 @@
   75% { transform: translateX(-5px); }
   100% { transform: translateX(0); }
 }
-
+/*
 #chat-button {
   position: fixed;
-  bottom: 30px; /* Ajuste la position verticale */
-  right: 30px;  /* Ajuste la position horizontale */
-  z-index: 9999; /* toujours au-dessus des autres éléments */
+  bottom: 30px; /* Ajuste la position verticale 
+  right: 30px;  /* Ajuste la position horizontale 
+  z-index: 9999; /* toujours au-dessus des autres éléments 
 }
 
 #chat-button img {
-  width: 80px; /* Ajuste la taille de l'icône */
+  width: 80px; /* Ajuste la taille de l'icône 
   height: 80px;
   border-radius: 50%;
-  /*background-color: #007bff; */
+  /*background-color: #007bff; 
   padding: 15px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   transition: transform 0.3s ease-in-out;
 }
 
 #chat-button img:hover {
-  transform: scale(1.1); /* Effet de survol */
-}
+  transform: scale(1.1); /* Effet de survol 
+}*/
 
 
   .flash-popup {
