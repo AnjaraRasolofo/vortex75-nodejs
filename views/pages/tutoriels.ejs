@@ -1,0 +1,49 @@
+
+<div class="container py-5">
+<h2 class="mb-4">Derniers tutoriels</h2>
+
+<% tutorials.forEach(tuto => { %>
+<div class="bg-light p-4 rounded shadow-sm mb-4 d-flex flex-column flex-md-row align-items-center">
+    <div class="me-md-4 mb-3 mb-md-0 text-center">
+        <img src="images/<%= tuto.image %>"
+             alt="<%= tuto.title %>"
+             class="img-fluid rounded"
+             style="max-width: 200px; height: auto;">
+    </div>
+
+    <div class="flex-grow-1">
+        <h5 class="fw-bold mb-2">
+            <a href="/tutoriels/<%= tuto.slug %>" class="text-decoration-none text-dark">
+                <%= tuto.title %>
+            </a>
+        </h5>
+        <p class="mb-2 text-muted small">
+            <% if (tuto.date_publication) { %>
+                <%= new Date(tuto.date_publication).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }) %> 
+                • Par <%= tuto.author?.name || 'Admin' %>
+            <% } else { %>
+                • Par <%= tuto.author?.name || 'Admin' %>
+            <% } %>
+        </p>
+        <p class="mb-0">
+            <%= tuto.content.replace(/(<([^>]+)>)/gi, '').substring(0, 150) %>
+        </p>
+    </div>
+</div>
+<% }) %>
+
+</div>
+
+<% if (pagination.totalPages > 1) { %>
+<nav aria-label="Pagination" class="mt-4">
+  <ul class="pagination justify-content-center">
+    <% for (let i = 1; i <= pagination.totalPages; i++) { %>
+      <li class="page-item <%= i === pagination.currentPage ? 'active' : '' %>">
+        <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+      </li>
+    <% } %>
+  </ul>
+</nav>
+<% } %>
+
+  

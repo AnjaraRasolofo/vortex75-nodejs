@@ -1,0 +1,54 @@
+<div class="container my-5">
+  <h2 class="mb-4 text-center">Nos derniers articles</h2>
+
+  <div class="row">
+    <!-- Colonne des articles -->
+    <div class="col-md-9">
+      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        <% posts.forEach(p => { %>
+          <div class="col">
+            <div class="card h-100">
+              <% if (p.image) { %>
+                <img src="/images/<%= p.image %>" 
+                     alt="Image de l'article" class="card-img-top object-fit-cover"
+                     style="height: 200px; object-fit: cover;">
+              <% } %>
+
+              <div class="card-body d-flex flex-column">
+                <h5 class="card-title"><%= p.title %></h5>
+
+                <p class="card-text text-muted">
+                  <small>
+                    Publié le 
+                    <%= new Date(p.date_publication).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }) %>
+                    • Catégorie : <%= p.category?.nom || 'Non catégorisé' %>
+                  </small>
+                </p>
+
+                <p class="card-text flex-grow-1"><%= p.content.replace(/(<([^>]+)>)/gi, '').substring(0, 100) %></p>
+
+                <a href="/actualites/<%= p.slug %>" class="btn btn-primary mx-auto mt-auto d-block">Lire l'article</a>
+              </div>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    </div>
+
+    <!-- Colonne des catégories -->
+    <div class="col-md-3">
+      <div class="card">
+        <div class="card-header">
+          Catégories
+        </div>
+        <ul class="list-group list-group-flush">
+          <% categories.forEach(cat => { %>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <a href="/actualites/categorie/<%= cat.slug %>"><%= cat.name %></a>
+            </li>
+          <% }) %>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

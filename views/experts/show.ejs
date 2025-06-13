@@ -1,0 +1,32 @@
+
+<div class="container py-5">
+    <div class="row">
+        <!-- Colonne image -->
+        <div class="col-md-5">
+            <img src="/images/produits/<%= product.image %>" alt="<%= product.name %>" class="img-fluid rounded shadow object-fit-cover" style="height: 360px;">
+        </div>
+
+        <!-- Colonne infos -->
+        <div class="col-md-7">
+            <h2 class="mb-3"><%= product.name %></h2>
+            <p class="text-muted"><%= product.description %></p>
+
+            <h4 class="text-success fw-bold"><%= Number(product.price).toFixed(0) %>$</h4>
+
+            <div class="d-flex align-items-center gap-3 mt-4">
+                <a href="/experts/catalogue" class="btn btn-catalogue">← Retour au catalogue</a>
+
+                <form action="/experts/shopping-cart/add/<%= product.id %>" method="POST">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                    <button type="submit" class="btn btn-primary">
+                        Ajouter au panier
+                    </button>
+                </form>
+            </div>
+            
+
+            
+        </div>
+    </div>
+</div>
+

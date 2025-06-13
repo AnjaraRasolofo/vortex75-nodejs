@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- CSRF Token -->
+    <meta name="csrf-token" content="<% csrfToken %>">
+
+    <title>Vortex75 | <%= title %></title>
+
+    <!-- Scripts -->
+    <script src="{{ asset('js/app.js') }}" defer></script>
+
+    <!-- Fonts -->
+    <link rel="dns-prefetch" href="//fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
+
+    <!-- Styles -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+    <div id="app" data-user='<%- JSON.stringify(user) %>'></div>
+    <!--<% if (success && success.length > 0) { %>
+        <div class="flash-popup flash-success">
+            <%= success[0] %>
+        </div>
+    <% } %>
+
+    <% if (error && error.length > 0) { %>
+        <div class="flash-popup flash-error">
+            <%= error[0] %>
+        </div>
+    <% } %>-->
+
+    <div class="flash-popup" style="display: none;"></div>
+
+    <%- include('partials/header') %>
+
+    <main class="py-4">
+
+        <%- body %>
+    </main>
+
+    <%- include('partials/footer') %>
+
+    <!-- Bouton flottant de chat -->
+    <div id="chat-toggle">
+        <img src="/images/chat4.png" alt="Chat" />
+    </div>
+
+    <!-- Boîte de chat -->
+    <div id="chat-box" style="display: none; position: fixed; bottom: 120px; right: 20px; width: 300px; height: 400px; background: white; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); z-index: 1000;">
+        <div style="background: #007bff; color: white; padding: 10px; border-top-left-radius: 8px; border-top-right-radius: 8px;">
+            <strong>Messagerie</strong>
+            <span id="chat-close" style="float: right; cursor: pointer;">&times;</span>
+        </div>
+        <div id="messagesContainer" style="padding: 10px; height: 290px; overflow-y: auto;">
+            <div id="messagesContainer" style="padding: 10px; height: 290px; overflow-y: auto;">
+                <% if (typeof messages !== 'undefined') { %>
+                <% messages.forEach(message => { %>
+                    <div class="<%= message.userId === user.id ? 'user-message' : 'admin-message' %>">
+                    <strong><%= message.userId === user.id ? 'Vous' : 'Admin' %>:</strong>
+                    <%= message.content %>
+                    </div>
+                <% }) }%>
+            </div>
+        </div>
+        <form id="messageForm">
+            <div style="padding: 10px; border-top: 1px solid #ccc;">
+                <input type="hidden" name="receiver_id" value="2">
+                <input type="text" id="message" name="message" placeholder="Écrire un message..." style="width: 100%; padding: 5px;">
+            </div>
+        </form>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+
+        $(document).ready(function () {
+            // Lire les messages envoyés depuis le backend
+            const serverSuccess = "<%= success && success.length > 0 ? success[0] : '' %>";
+            const serverError = "<%= error && error.length > 0 ? error[0] : '' %>";
+
+            // Affiche un message s'il existe
+            if (serverSuccess) showFlashMessage('success', serverSuccess);
+            if (serverError) showFlashMessage('error', serverError);
+        });
+        
+        const socket = io(); 
+
+            const currentUser = $('#app').data('user');
+            //const currentUser = currentUserRaw ? JSON.parse(currentUserRaw) : null;
+            
+        function showFlashMessage(type, message) {
+            
+            const $popup = $('.flash-popup');
+            let bgColor = '#fff';
+            
+            if (type === 'success') bgColor = '#28a745';
+            else if (type === 'error') bgColor = '#dc3545';
+
+            $popup
+                .text(message)
+                .css({
+                    backgroundColor: bgColor,
+                    color: '#fff',
+                    display: 'block',
+                    padding: '10px 20px',
+                    borderRadius: '5px',
+                    position: 'fixed',
+                    top: '20px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    zIndex: 9999,
+                    opacity: 1
+                });
+
+            // Masquage automatique après 2 secondes
+            setTimeout(() => {
+                $popup.fadeOut(300, () => {
+                    $popup.text('').css('display', 'none');
+                });
+            }, 4000);
+            
+        }
+
+
+        
+        $(document).on('click', '#chat-toggle', function () {
+            if (!currentUser) {
+                    
+                    showFlashMessage('error','Veuillez vous connecter ou vous inscrire pour échanger avec nous !');
+                    
+                } else {
+                    $('#chat-box').toggle();
+                    loadMessages();
+                }
+        });
+
+
+
+            document.addEventListener("DOMContentLoaded", function () {
+                // Vérifie si l'utilisateur a déjà vu et fermé le popup pendant la session courante de l'utilisateur
+                if (!sessionStorage.getItem("popupAbonnementClosed")) {
+                    setTimeout(function () {
+                        var popupElement = document.getElementById('popupAbonnement');
+                        var popup = new bootstrap.Modal(popupElement);
+                        popup.show();
+
+                        // Quand le popup est fermé, on enregistre l'information
+                        popupElement.addEventListener('hidden.bs.modal', function () {
+                            sessionStorage.setItem("popupAbonnementClosed", "true");
+                        });
+                    }, 40000); // 40 secondes
+                }
+            });
+
+        $('#chat-close').click(function () {
+            $('#chat-box').fadeOut();
+         });
+
+
+    $('#messageForm').submit(function (e) {
+        e.preventDefault();
+        
+        const content = $('#message').val().trim();
+        const receiverId = $('#receiverId').val();
+        if (!content) return;
+
+        userId = currentUser.id;
+        socket.emit('send_message', {
+            userId,
+            content,
+            receiverId
+        });
+
+        //$('#messagesContainer').append(`<div><strong>Moi:</strong> ${content}</div>`);
+        $('#message').val('');
+        //$('#messagesContainer').scrollTop($('#chat-messages')[0].scrollHeight);
+    });
+        
+            
+    function loadMessages(messages) {
+        
+            const $list = $('#messagesContainer');
+            $list.empty();
+
+            messages.forEach(msg => {
+            const isAdmin = msg.userId === 0; // admin a un ID spécial ou un champ particulier ?
+            const classe = isAdmin ? 'admin-message' : 'user-message';
+
+            $list.append(`<li class="${classe}"><strong>${isAdmin ? 'Admin' : 'Moi'} :</strong> ${msg.content}</li>`);
+            });
+        }
+
+
+    // Réception de message
+    socket.on('receive_message', async(data) => {
+        /*let sender = '';
+        if(data.sender_id === 1) sender = 'Moi';
+        else if(data.sender_id === 2) sender = 'Vortex75'; 
+        if (currentUser.role !== 'admin' && msg.userId !== currentUser.id) return;
+        await $('#messagesContainer').append(`<div><strong>${sender}:</strong> ${data.content}</div>`);
+        $('#messagesContainer').scrollTop($('#chat-messages')[0].scrollHeight);
+*/
+
+
+        if (
+            data.sender_id === currentUser.id || msg.receiver_id === currentUser.id
+            ) {
+                $('#messagesContainer').append(`
+                <div class="message ${data.sender_id === currentUser.id ? 'sent' : 'received'}">
+                    <strong>${data.sender_id === currentUser.id ? 'Moi' : 'Vortex75'} :</strong>
+                    ${data.content}
+                </div>
+                `);
+            }
+        });
+
+
+    $('#chat-toggle, #discussion-direct').click(function () {
+        //$('#chat-box').fadeToggle();
+        if (!currentUser) {
+                    
+                    showFlashMessage('error','Veuillez vous connecter ou vous inscrire pour échanger avec nous !');
+                    
+                } else {
+                    $('#chat-box').toggle();
+                    loadMessages();
+                }
+    });
+
+    
+
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+

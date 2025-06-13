@@ -1,0 +1,83 @@
+<div id="app">
+        
+        <nav class="navbar-custom navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container">
+                <a class="menu-logo navbar-brand" href="/">Vortex<span>75</span> </a>
+        
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+        
+                <div class="collapse navbar-collapse justify-content-center ms-5" id="navbarNav">
+                    
+                    <!-- Liens à gauche -->
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link <%= currentRoute === 'abouts' ? 'active' : '' %>" href="/abouts">A propos</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link <%= currentRoute === 'guides' ? 'active' : '' %>" href="/guides">Guides</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link <%= currentRoute === 'experts' ? 'active' : '' %>" href="/experts">Indicateurs et Experts</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link <%= currentRoute === 'ressources' ? 'active' : '' %>" href="/tutoriels">Formations</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link <%= currentRoute === 'actualites' ? 'active' : '' %>" href="/actualites">Actualités</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link <%= currentRoute === 'contact' ? 'active' : '' %>" href="/contact">Contact</a>
+                        </li>
+                    </ul>
+        
+                    <!-- Liens à droite : Connexion / Déconnexion -->
+                    <ul class="navbar-nav ms-auto">
+                    <% if (!user) { %>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/login">Connexion</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/register">Inscription</a>
+                        </li>
+                    <% } else { %>
+                        
+                        <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <% if (user && user.name) { %>
+                                <%= user.name %>
+                            <% } else { %>
+                                Bonjour, invité !
+                            <% } %>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="/admin">Administration</a></li>
+                            <li>
+                            <form action="/logout" method="POST" class="d-inline">
+                                <!-- CSRF token -->
+                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                <button class="dropdown-item" type="submit">Déconnexion</button>
+                            </form>
+                            </li>
+                        </ul>
+                        </li>
+                        <a href="/experts/shopping-cart/" class="position-relative">
+                            <i class="cart fs-2" style="font-size: 2rem;">🛒</i>
+                            <% if (shoppingCart && shoppingCart.quantity > 0) { %>
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                <%= shoppingCart.totalQty %>
+                                </span>
+                            <% } else { %>
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-secondary">
+                                0
+                                </span>
+                            <% } %>
+                        </a>
+                    <% } %>
+                    </ul>
+
+                </div>
+            </div>
+        </nav>

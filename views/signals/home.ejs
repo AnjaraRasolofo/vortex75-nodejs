@@ -1,0 +1,52 @@
+<div class="container py-5">
+<h2 class="mb-4">Vortex75 - Signals</h2>
+
+<% signals.forEach(signal => { %>
+<div class="bg-light p-4 rounded shadow-sm mb-4 d-flex flex-column flex-md-row align-items-center">
+    <div class="me-md-4 mb-3 mb-md-0 text-center">
+        <img src="images/<%=  %>"
+             alt="<%= 'Signal' %>"
+             class="img-fluid rounded"
+             style="max-width: 200px; height: auto;">
+    </div>
+
+    <div class="flex-grow-1">
+        <h5 class="fw-bold mb-2">
+            <a href="/signals/<%= '' %>" class="text-decoration-none text-dark">
+                <%= '04-06-2025' %>
+            </a>
+        </h5>
+        <p class="mb-2 text-muted small">
+            <% if (signal.date_publication) { %>
+                <%= new Date(signal.date_publication).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }) %> 
+                • Par <%= 'Admin' || 'Anonyme' %>
+            <% } else { %>
+                • Par <%= 'Admin' || 'Anonyme' %>
+            <% } %>
+        </p>
+        <p class="mb-0">
+            <%= 'Buy at 2536512.23' %>
+        </p>
+    </div>
+</div>
+<% }) %>
+
+<div class="container py-5">
+  <h2 class="mb-4">Signaux de Trading</h2>
+  <% signals.forEach(signal => { %>
+    <div class="card mb-4">
+      <div class="card-body">
+        <h5><%= signal.type.toUpperCase() %> @ <%= signal.prix_entree %>$</h5>
+        <p>
+          SL : <%= signal.stop_loss %>$ - TP : <%= signal.take_profit %>$ <br>
+          Résultat : <strong><%= signal.resultat %></strong><br>
+          Posté par : <%= signal?.auteur.name || 'Auteur inconnu' %> le 
+          <%= new Date(signal.date).toLocaleString('fr-FR') %>
+        </p>
+        <% if (signal.graphique) { %>
+          <img src="/uploads/<%= signal.graphique %>" class="img-fluid" style="max-height:300px;">
+        <% } %>
+      </div>
+    </div>
+  <% }) %>
+</div>
